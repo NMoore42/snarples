@@ -49,6 +49,7 @@ function newGame(players) {
 
 //// PLAYER FUNCTIONS ////
 
+//Appends player name forms to page
 function playerForm(players) {
   const playersDiv = document.getElementById("players-div");
   let playersString = ""
@@ -58,10 +59,11 @@ function playerForm(players) {
   playersDiv.innerHTML = playersString;
 }
 
+//Creates a player name form for each player in new game
 function createPlayerDiv() {
   return `
     <form>
-      <select>
+      <select data-name="name">
         <option value="" disabled selected>Choose Player</option>
         <option value="Nick">Nick</option>
         <option value="Dave">Dave</option>
@@ -69,11 +71,28 @@ function createPlayerDiv() {
         <option value="Grace">Grace</option>
         <option value="Jodi">Jodi</option>
         <option value="Sarah">Sarah</option>
-        <option value="Add New Player">New Player</option>
+        <option value="New Player">New Player</option>
       </select>
       <button type="submit">Submit Player</button>
     </form>
   `
+}
+
+//Handles player name fields.  If new player needs to be added to db, inserts text field.
+function newPlayerNameHandler() {
+  clicked = event.target;
+  if (clicked.dataset.name === "name") {
+    if (clicked.value === "New Player") {
+      let nameField = document.createElement("input");
+      nameField.type = "text";
+      nameField.placeholder = "New Name"
+      clicked.parentNode.insertBefore(nameField, clicked.nextSibling)
+    } else {
+      if (clicked.nextSibling.tagName === "INPUT") {
+        clicked.nextSibling.remove();
+      }
+    }
+  }
 }
 
 
@@ -89,3 +108,4 @@ function createPlayerDiv() {
 
 //// EVENT LISTENTERS ////
 newGameForm.addEventListener("submit", startNewGame)
+mainDiv.addEventListener("change", newPlayerNameHandler)
