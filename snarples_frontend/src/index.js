@@ -62,7 +62,7 @@ function playerForm(players) {
 //Creates a player name form for each player in new game
 function createPlayerDiv() {
   return `
-    <form>
+    <form data-form="form">
       <select data-name="name">
         <option value="" disabled selected>Choose Player</option>
         <option value="Nick">Nick</option>
@@ -80,7 +80,7 @@ function createPlayerDiv() {
 
 //Handles player name fields.  If new player needs to be added to db, inserts text field.
 function newPlayerNameHandler() {
-  clicked = event.target;
+  let clicked = event.target;
   if (clicked.dataset.name === "name") {
     if (clicked.value === "New Player") {
       let nameField = document.createElement("input");
@@ -96,7 +96,29 @@ function newPlayerNameHandler() {
 }
 
 
+//// HAND FUNCTIONS ////
 
+//Handles bubbling for submitting a player name
+function createInitialHandHandler() {
+  event.preventDefault();
+  let clicked = event.target;
+  if (clicked.dataset.form === "form") {
+    determineNewPlayer(clicked);
+  }
+}
+
+//Creates initial hand for player.  If player instance doesn't exists, invokes function to create new player.
+function determineNewPlayer(clicked) {
+  let select = clicked.firstElementChild;
+  if (select.value === "New Player") {
+    //Create new player instance
+    console.log(select.nextElementSibling.value)
+    //Then create new hand instance
+  } else {
+    console.log(clicked.firstElementChild.value)
+    //Create new hand instance
+  }
+}
 
 
 
@@ -109,3 +131,4 @@ function newPlayerNameHandler() {
 //// EVENT LISTENTERS ////
 newGameForm.addEventListener("submit", startNewGame)
 mainDiv.addEventListener("change", newPlayerNameHandler)
+mainDiv.addEventListener("submit", createInitialHandHandler)
