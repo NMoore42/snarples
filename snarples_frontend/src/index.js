@@ -5,22 +5,21 @@ const mainDiv = document.getElementById("main-div");
 
 //// NEW GAME FUNCTIONS ////
 
-//If valid player count, calls on newGameFetch
+//If valid player count, calls on createNewGameInstance
 function startNewGame() {
   event.preventDefault();
   let players = playerCount.value
   if (players) {
-    newGameFetch(players);
+    createNewGameInstance(players);
   }
 }
 
 //Creates a new game in database
-function newGameFetch(players) {
-  // fetch("http://localhost:3000/api/v1/games", newGameObj())
-  //   .then(res => res.json())
-  //   .then(res => newGame(players))
-  //   .catch(errors => errors.messages)
-  newGame(players);
+function createNewGameInstance(players) {
+  fetch("http://localhost:3000/api/v1/games", newGameObj())
+    .then(res => res.json())
+    .then(res => newGame(players))
+    .catch(errors => errors.messages)
 }
 
 //New game object for post request
@@ -32,7 +31,7 @@ function newGameObj() {
       "Accept": "application/json"
     },
     body: JSON.stringify({
-      complete: false,
+      completed: false,
       winner: 0
     })
   }
@@ -62,19 +61,21 @@ function playerForm(players) {
 //Creates a player name form for each player in new game
 function createPlayerDiv() {
   return `
-    <form data-form="form">
-      <select data-name="name">
-        <option value="" disabled selected>Choose Player</option>
-        <option value="Nick">Nick</option>
-        <option value="Dave">Dave</option>
-        <option value="Robert">Robert</option>
-        <option value="Grace">Grace</option>
-        <option value="Jodi">Jodi</option>
-        <option value="Sarah">Sarah</option>
-        <option value="New Player">New Player</option>
-      </select>
-      <button type="submit">Submit Player</button>
-    </form>
+    <div>
+      <form data-form="form">
+        <select data-name="name">
+          <option value="" disabled selected>Choose Player</option>
+          <option value="Nick">Nick</option>
+          <option value="Dave">Dave</option>
+          <option value="Robert">Robert</option>
+          <option value="Grace">Grace</option>
+          <option value="Jodi">Jodi</option>
+          <option value="Sarah">Sarah</option>
+          <option value="New Player">New Player</option>
+        </select>
+        <button type="submit">Submit Player</button>
+      </form>
+    </div>
   `
 }
 
@@ -95,6 +96,30 @@ function newPlayerNameHandler() {
   }
 }
 
+//Fetch call to create a new player instance
+function createNewPlayerInstance(name) {
+  fetch("http://localhost:3000/api/v1/players", newPlayerObj(name))
+    .then(res => res.json())
+    //.then(res => newGame(players))
+    .catch(errors => errors.messages)
+  }
+
+  //New game object for post request
+  function newPlayerObj(name) {
+  return {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({
+      name: name,
+      games_won: 0,
+      games_played: 0
+    })
+  }
+}
+
 
 //// HAND FUNCTIONS ////
 
@@ -103,6 +128,7 @@ function createInitialHandHandler() {
   event.preventDefault();
   let clicked = event.target;
   if (clicked.dataset.form === "form") {
+    console.log("hi")
     determineNewPlayer(clicked);
   }
 }
@@ -110,12 +136,18 @@ function createInitialHandHandler() {
 //Creates initial hand for player.  If player instance doesn't exists, invokes function to create new player.
 function determineNewPlayer(clicked) {
   let select = clicked.firstElementChild;
+  let p = document.createElement("p");
   if (select.value === "New Player") {
+    let name = select.nextElementSibling.value
+    p.innerHTML = name + " is in the game!"
     //Create new player instance
-    console.log(select.nextElementSibling.value)
+    //createNewPlayerInstance(select.nextElementSibling.value)
+    clicked.parentElement.innerHTML = p.outerHTML;
     //Then create new hand instance
   } else {
-    console.log(clicked.firstElementChild.value)
+    let name = clicked.firstElementChild.value
+    p.innerHTML = name + " is in the game!"
+    clicked.parentElement.innerHTML = p.outerHTML;
     //Create new hand instance
   }
 }

@@ -1,6 +1,6 @@
 class Api::V1::HandsController < ApplicationController
-
   before_action :find_hand, only: [:update]
+
   def index
     @hands = Hand.all
     render json: @hands
